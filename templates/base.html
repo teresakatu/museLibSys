@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} · MuseLib</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('main.index') }}">MuseLib</a>
+    {% if g.user %}
+    <nav class="nav">
+      <a href="{{ url_for('main.index') }}" class="{{ 'active' if request.endpoint == 'main.index' }}">Home</a>
+      <a href="{{ url_for('songs.browse') }}" class="{{ 'active' if request.endpoint == 'songs.browse' }}">Browse</a>
+      <a href="{{ url_for('library.index') }}" class="{{ 'active' if request.endpoint == 'library.index' }}">Library</a>
+      <a href="{{ url_for('playlists.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('playlists.') }}">Playlists</a>
+      <a href="{{ url_for('trending.index') }}" class="{{ 'active' if request.endpoint == 'trending.index' }}">Trending</a>
+      <a href="{{ url_for('songs.new') }}" class="{{ 'active' if request.endpoint == 'songs.new' }}">Add Song</a>
+    </nav>
+    <div class="user">
+      <a href="{{ url_for('account.index') }}" class="{{ 'active' if request.endpoint == 'account.index' }}">{{ g.user.username }}</a>
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <button type="submit" class="link-button">Log out</button>
+      </form>
+    </div>
+    {% else %}
+    <div class="user">
+      <a href="{{ url_for('auth.login') }}">Log in</a>
+      <a href="{{ url_for('auth.signup') }}" class="button small">Sign up</a>
+    </div>
+    {% endif %}
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
