@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Browse & Search{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Browse & Search</h1>
+  <a href="{{ url_for('songs.new') }}" class="button small">+ Add Song</a>
+</div>
+
+<form method="get" class="filters">
+  <input type="search" name="q" value="{{ q }}" placeholder="Search songs, artists or albums" aria-label="Search">
+  <select name="genre" aria-label="Genre">
+    <option value="">All genres</option>
+    {% for g_name in genres %}
+    <option value="{{ g_name }}" {{ 'selected' if g_name == genre }}>{{ g_name }}</option>
+    {% endfor %}
+  </select>
+  <select name="sort" aria-label="Sort by">
+    {% for key, (label, _) in sorts.items() %}
+    <option value="{{ key }}" {{ 'selected' if key == sort }}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="button">Search</button>
+  {% if q or genre or sort != 'title' %}
+  <a href="{{ url_for('songs.browse') }}" class="muted clear">Clear</a>
+  {% endif %}
+</form>
+
+<p class="muted result-count">
+  {{ songs|length }} song{{ '' if songs|length == 1 else 's' }}
+  {% if q %}matching “{{ q }}”{% endif %}
+  {% if genre %}in {{ genre }}{% endif %}
+</p>
+
+{% if songs %}
+<div class="table-wrap">
+  <table class="songs">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Title</th>
+        <th class="hide-sm">Album</th>
+        <th class="hide-sm">Genre</th>
+        <th class="hide-sm">Released</th>
+        <th class="num">Length</th>
+        <th>Add to playlist</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in songs %}
+      <tr id="song-{{ s.song_id }}">
+        <td>
+          {% if s.saved %}
+          <form method="post" action="{{ url_for('library.remove', song_id=s.song_id) }}">
+            <input type="hidden" name="next" value="{{ request.full_path }}">
+            <button type="submit" class="heart saved" title="Remove from library" aria-label="Remove {{ s.title }} from library">♥</button>
+          </form>
+          {% else %}
+          <form method="post" action="{{ url_for('library.save', song_id=s.song_id) }}">
+            <input type="hidden" name="next" value="{{ request.full_path }}">
+            <button type="submit" class="heart" title="Save to library" aria-label="Save {{ s.title }} to library">♡</button>
+          </form>
+          {% endif %}
+        </td>
+        <td>
+          <div class="song-title">{{ s.title }}</div>
+          <div class="muted small">{{ s.artists }}</div>
+        </td>
+        <td class="hide-sm{{ ' muted' if s.album == '(single)' }}">{{ s.album }}</td>
+        <td class="hide-sm">{{ s.genre or '—' }}</td>
+        <td class="hide-sm">{{ s.release_date.year if s.release_date else '—' }}</td>
+        <td class="num">{{ s.length }}</td>
+        <td>
+          {% if playlists %}
+          <form method="post" action="{{ url_for('playlists.add_song') }}" class="add-to">
+            <input type="hidden" name="song_id" value="{{ s.song_id }}">
+            <input type="hidden" name="next" value="{{ request.full_path }}">
+            <select name="playlist_id" aria-label="Playlist for {{ s.title }}" required>
+              {% for p in playlists %}
+              <option value="{{ p.playlist_id }}">{{ p.name }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="button small">Add</button>
+          </form>
+          {% else %}
+          <a href="{{ url_for('playlists.index') }}" class="muted small">Create a playlist first</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card empty">
+  <p>No songs found.</p>
+  <a href="{{ url_for('songs.browse') }}">Show all songs</a>
+</div>
+{% endif %}
+{% endblock %}

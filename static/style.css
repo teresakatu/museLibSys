@@ -208,3 +208,151 @@ textarea:focus {
     flex-basis: 100%;
   }
 }
+
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.page-head h1 {
+  margin: 0;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.filters input,
+.filters select {
+  width: auto;
+  margin: 0;
+}
+
+.filters input[type="search"] {
+  flex: 1 1 260px;
+}
+
+.clear {
+  font-size: 0.9rem;
+}
+
+.result-count {
+  margin: 1rem 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+table.songs {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.songs th,
+.songs td {
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+}
+
+.songs th {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.songs tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.songs tbody tr:hover {
+  background: var(--surface-2);
+}
+
+.songs tbody tr:target {
+  background: rgba(124, 92, 255, 0.14);
+}
+
+.songs .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.songs form {
+  margin: 0;
+}
+
+.song-title {
+  font-weight: 600;
+}
+
+.heart {
+  background: none;
+  border: none;
+  padding: 0.1rem 0.3rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.heart:hover,
+.heart.saved {
+  color: var(--accent);
+}
+
+.add-to {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.add-to select {
+  width: auto;
+  min-width: 8rem;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.empty {
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .hide-sm {
+    display: none;
+  }
+
+  .songs th,
+  .songs td {
+    padding: 0.6rem 0.5rem;
+  }
+
+  .add-to {
+    flex-direction: column;
+    width: 6.5rem;
+  }
+
+  .add-to select {
+    min-width: 0;
+    width: 100%;
+  }
+}
