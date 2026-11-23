@@ -2,5 +2,86 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <h1>Welcome back, {{ g.user.username }}</h1>
-<p class="muted">Your playlists, recent saves and trending songs will appear here.</p>
+<p class="muted">Member since {{ summary.created_date.strftime('%B %Y') }}</p>
+
+<div class="stats">
+  <a href="{{ url_for('library.index') }}" class="card stat">
+    <span class="stat-value">{{ summary.saved_count }}</span>
+    <span class="muted small">Saved songs</span>
+  </a>
+  <a href="{{ url_for('playlists.index') }}" class="card stat">
+    <span class="stat-value">{{ summary.playlist_count }}</span>
+    <span class="muted small">Playlists</span>
+  </a>
+  <a href="{{ url_for('songs.browse') }}" class="card stat stat-action">
+    <span class="stat-value">→</span>
+    <span class="muted small">Browse songs</span>
+  </a>
+</div>
+
+<section class="home-section">
+  <div class="section-head">
+    <h2>Your playlists</h2>
+    <a href="{{ url_for('playlists.index') }}" class="muted small">See all</a>
+  </div>
+  {% if playlists %}
+  <div class="playlist-grid">
+    {% for p in playlists %}
+    <a href="{{ url_for('playlists.detail', playlist_id=p.playlist_id) }}" class="card playlist-card">
+      <div class="playlist-name">{{ p.name }}</div>
+      <div class="muted small">{{ p.song_count }} song{{ '' if p.song_count == 1 else 's' }}</div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="muted">No playlists yet. <a href="{{ url_for('playlists.index') }}">Create your first one</a>.</p>
+  {% endif %}
+</section>
+
+<div class="home-columns">
+  <section class="home-section">
+    <div class="section-head">
+      <h2>Recently saved</h2>
+      <a href="{{ url_for('library.index') }}" class="muted small">See all</a>
+    </div>
+    {% if recent %}
+    <ol class="card track-list">
+      {% for s in recent %}
+      <li>
+        <div>
+          <div class="song-title">{{ s.title }}</div>
+          <div class="muted small">{{ s.artists }}</div>
+        </div>
+        <span class="muted small">{{ s.saved_date.strftime('%b %d') }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p class="muted">Nothing saved yet. Tap ♡ on any song in <a href="{{ url_for('songs.browse') }}">Browse</a>.</p>
+    {% endif %}
+  </section>
+
+  <section class="home-section">
+    <div class="section-head">
+      <h2>Trending</h2>
+      <a href="{{ url_for('trending.index') }}" class="muted small">See all</a>
+    </div>
+    {% if trending %}
+    <ol class="card track-list numbered">
+      {% for s in trending %}
+      <li>
+        <span class="rank">{{ loop.index }}</span>
+        <div class="grow">
+          <div class="song-title">{{ s.title }}</div>
+          <div class="muted small">{{ s.artists }}</div>
+        </div>
+        <span class="muted small">♥ {{ s.times_saved }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p class="muted">No trending songs yet.</p>
+    {% endif %}
+  </section>
+</div>
 {% endblock %}
