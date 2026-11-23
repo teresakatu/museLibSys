@@ -133,6 +133,7 @@ textarea:focus {
 
 .button {
   display: inline-block;
+  white-space: nowrap;
   padding: 0.6rem 1.25rem;
   background: var(--accent);
   border: none;
@@ -355,4 +356,117 @@ table.songs {
     min-width: 0;
     width: 100%;
   }
+}
+
+details > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.create-card,
+.edit-card {
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.create-card summary.button {
+  display: inline-block;
+}
+
+.edit-card summary {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.edit-card summary:hover {
+  color: var(--text);
+}
+
+details[open] > summary {
+  margin-bottom: 1rem;
+}
+
+.stack-form {
+  max-width: 520px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.playlist-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.playlist-card:hover {
+  border-color: var(--accent);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.playlist-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.playlist-desc {
+  flex: 1;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.playlist-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.playlist-head p {
+  margin: 0.25rem 0 0;
+}
+
+.playlist-description {
+  color: var(--text);
+}
+
+.danger-zone {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.button.danger {
+  background: var(--error);
+}
+
+.button.danger:hover {
+  background: #d94848;
+}
+
+.link-button.remove:hover {
+  color: var(--error);
 }

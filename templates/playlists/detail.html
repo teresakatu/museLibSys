@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ playlist.name }}{% endblock %}
+{% block content %}
+<a href="{{ url_for('playlists.index') }}" class="muted small back-link">← My Playlists</a>
+
+<div class="playlist-head">
+  <div>
+    <h1>{{ playlist.name }}</h1>
+    {% if playlist.description %}
+    <p class="playlist-description">{{ playlist.description }}</p>
+    {% endif %}
+    <p class="muted small">
+      {{ g.user.username }} · {{ songs|length }} song{{ '' if songs|length == 1 else 's' }}
+      {% if songs %}· {{ total_seconds|total_length }}{% endif %}
+      · Created {{ playlist.created_date.strftime('%b %d, %Y') }}
+    </p>
+  </div>
+  <a href="{{ url_for('songs.browse') }}" class="button small">+ Add songs</a>
+</div>
+
+<details class="card edit-card">
+  <summary>Edit details</summary>
+  <form method="post" action="{{ url_for('playlists.edit', playlist_id=playlist.playlist_id) }}" class="stack-form">
+    <label>Name
+      <input name="name" value="{{ playlist.name }}" maxlength="100" required>
+    </label>
+    <label>Description <span class="muted small">(optional)</span>
+      <textarea name="description" rows="2">{{ playlist.description or '' }}</textarea>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="button">Save changes</button>
+    </div>
+  </form>
+  <form method="post" action="{{ url_for('playlists.delete', playlist_id=playlist.playlist_id) }}"
+        onsubmit='return confirm({{ ("Delete “" ~ playlist.name ~ "”? This cannot be undone.")|tojson }});' class="danger-zone">
+    <span class="muted small">Deleting removes the playlist and its song list. The songs stay in the catalog.</span>
+    <button type="submit" class="button small danger">Delete playlist</button>
+  </form>
+</details>
+
+{% if songs %}
+<div class="table-wrap">
+  <table class="songs">
+    <thead>
+      <tr>
+        <th class="num">#</th>
+        <th>Title</th>
+        <th class="hide-sm">Album</th>
+        <th class="num">Length</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in songs %}
+      <tr id="song-{{ s.song_id }}">
+        <td class="num muted">{{ s.position }}</td>
+        <td>
+          <div class="song-title">{{ s.title }}</div>
+          <div class="muted small">{{ s.artists }}</div>
+        </td>
+        <td class="hide-sm{{ ' muted' if s.album == '(single)' }}">{{ s.album }}</td>
+        <td class="num">{{ s.length }}</td>
+        <td class="num">
+          <form method="post" action="{{ url_for('playlists.remove_song', playlist_id=playlist.playlist_id, song_id=s.song_id) }}">
+            <button type="submit" class="link-button remove" title="Remove from playlist" aria-label="Remove {{ s.title }} from playlist">Remove</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card empty">
+  <p>This playlist is empty.</p>
+  <a href="{{ url_for('songs.browse') }}">Find songs to add</a>
+</div>
+{% endif %}
+{% endblock %}

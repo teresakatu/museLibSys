@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My Playlists{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>My Playlists</h1>
+</div>
+
+<details class="card create-card" {{ 'open' if not playlists }}>
+  <summary class="button small">+ New playlist</summary>
+  <form method="post" action="{{ url_for('playlists.create') }}" class="stack-form">
+    <label>Name
+      <input name="name" maxlength="100" required placeholder="e.g. Road Trip">
+    </label>
+    <label>Description <span class="muted small">(optional)</span>
+      <textarea name="description" rows="2" placeholder="What's this playlist for?"></textarea>
+    </label>
+    <button type="submit" class="button">Create playlist</button>
+  </form>
+</details>
+
+{% if playlists %}
+<div class="playlist-grid">
+  {% for p in playlists %}
+  <a href="{{ url_for('playlists.detail', playlist_id=p.playlist_id) }}" class="card playlist-card">
+    <div class="playlist-name">{{ p.name }}</div>
+    <div class="muted small playlist-desc">{{ p.description or 'No description' }}</div>
+    <div class="muted small">
+      {{ p.song_count }} song{{ '' if p.song_count == 1 else 's' }}
+      {% if p.song_count %}· {{ p.total_seconds|total_length }}{% endif %}
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<p class="muted">You don't have any playlists yet. Create one above, then add songs from <a href="{{ url_for('songs.browse') }}">Browse</a>.</p>
+{% endif %}
+{% endblock %}
