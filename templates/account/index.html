@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Account{% endblock %}
+{% block content %}
+<h1>Account</h1>
+
+<section class="card account-card">
+  <dl class="profile">
+    <div><dt>Username</dt><dd>{{ summary.username }}</dd></div>
+    <div><dt>Email</dt><dd>{{ summary.email }}</dd></div>
+    <div><dt>Member since</dt><dd>{{ summary.created_date.strftime('%b %d, %Y') }}</dd></div>
+    <div><dt>Saved songs</dt><dd>{{ summary.saved_count }}</dd></div>
+    <div><dt>Playlists</dt><dd>{{ summary.playlist_count }}</dd></div>
+  </dl>
+</section>
+
+<div class="account-grid">
+  <section class="card account-card">
+    <h2>Change email</h2>
+    <form method="post" action="{{ url_for('account.change_email') }}">
+      <label>New email
+        <input type="email" name="email" maxlength="255" required>
+      </label>
+      <label>Current password
+        <input type="password" name="current_password" required autocomplete="current-password">
+      </label>
+      <button type="submit" class="button">Update email</button>
+    </form>
+  </section>
+
+  <section class="card account-card">
+    <h2>Change password</h2>
+    <form method="post" action="{{ url_for('account.change_password') }}">
+      <label>Current password
+        <input type="password" name="current_password" required autocomplete="current-password">
+      </label>
+      <label>New password
+        <input type="password" name="new_password" minlength="8" required autocomplete="new-password">
+      </label>
+      <label>Confirm new password
+        <input type="password" name="confirm" minlength="8" required autocomplete="new-password">
+      </label>
+      <button type="submit" class="button">Change password</button>
+    </form>
+  </section>
+</div>
+
+<section class="card account-card danger-card">
+  <h2>Delete account</h2>
+  <p class="muted">
+    This permanently deletes your account, your library ({{ summary.saved_count }} saved
+    song{{ '' if summary.saved_count == 1 else 's' }}) and your {{ summary.playlist_count }}
+    playlist{{ '' if summary.playlist_count == 1 else 's' }}. Songs stay in the catalog for everyone else.
+  </p>
+  <form method="post" action="{{ url_for('account.delete') }}" class="inline-form"
+        onsubmit='return confirm("Delete your account and all of its data? This cannot be undone.");'>
+    <label>Current password
+      <input type="password" name="current_password" required autocomplete="current-password">
+    </label>
+    <button type="submit" class="button danger">Delete my account</button>
+  </form>
+</section>
+{% endblock %}
